@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 import '../../notification/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,9 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void loadFCM() async {
     String? token = await FirebaseMessaging.instance.getToken();
     print(token);
-
-    String title = FirebaseMessaging.instance.app.name;
-
     if (!kIsWeb) {
       channel = const AndroidNotificationChannel(
           "high_importance_channel", "High Importance Notifications",
@@ -40,12 +37,30 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadFCM();
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
+  void _handleMessage(RemoteMessage message) {
+
+  }
+
+  @override
+  void initState() {
+    setupInteractedMessage();
+    tz.initializeTimeZones();
+    super.initState();
+    // loadFCM();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

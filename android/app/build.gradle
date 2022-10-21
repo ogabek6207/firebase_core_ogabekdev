@@ -31,7 +31,6 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -47,7 +46,6 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "uz.nazirov.firebase_core_ogabekdev"
-        multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
