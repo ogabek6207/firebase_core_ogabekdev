@@ -5,21 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'src/ui/home_screen.dart';
 
+AndroidNotificationChannel channel = const AndroidNotificationChannel(
+  "high_importance_channel",
+  "High Importance Notifications",
+  importance: Importance.high,
+  playSound: true,
+);
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
+  print("A bg message just showed up : ${
+  message.messageId
+  }");
 }
 
-Future<void> main() async {
+ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   notificationService.initNotification();
-  await Firebase.initializeApp(
-  );
 
+  await Firebase.initializeApp();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true,
+  badge: true, sound: true,);
+
   runApp(const MyApp());
 }
 
@@ -33,7 +49,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

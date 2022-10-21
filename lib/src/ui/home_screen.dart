@@ -1,8 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import '../../main.dart';
 import '../../notification/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,51 +13,67 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late AndroidNotificationChannel channel;
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
-  void loadFCM() async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    print(token);
-    if (!kIsWeb) {
-      channel = const AndroidNotificationChannel(
-          "high_importance_channel", "High Importance Notifications",
-          importance: Importance.high);
-      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-    }
-  }
-
-  Future<void> setupInteractedMessage() async {
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
-
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
-    }
-
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
-
-  void _handleMessage(RemoteMessage message) {
-
+  void showNotification() {
+    flutterLocalNotificationsPlugin.show(
+      0,
+      "title",
+      "body",
+      NotificationDetails(
+        android: AndroidNotificationDetails(channel.id, channel.name,
+            channelDescription: channel.description,
+            importance: Importance.high,
+            color: Colors.blue,
+            playSound: true,
+            icon: '@mipmap/ic_launcher'),
+      ),
+    );
   }
 
   @override
   void initState() {
-    setupInteractedMessage();
-    tz.initializeTimeZones();
     super.initState();
-    // loadFCM();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(channel.id, channel.name,
+                channelDescription: channel.description,
+                color: Colors.blue,
+                playSound: true,
+                icon: "@mipmap/ic_launcher"),
+          ),
+        );
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("A new OnMessageOpenedApp event was published! ");
+
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title!),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(notification.body!),
+                    ],
+                  ),
+                ),
+              );
+            });
+      }
+    });
   }
 
   @override
@@ -66,12 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         leading: FloatingActionButton(
           onPressed: () {
-            notificationService.showNotificationDate(
-              3,
-              "title",
-              "body",
-              DateTime.now(),
-            );
+            showNotification();
           },
         ),
       ),
