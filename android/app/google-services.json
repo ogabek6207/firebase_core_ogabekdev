@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "799944217562",
+    "project_id": "ogabekdevproject",
+    "storage_bucket": "ogabekdevproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799944217562:android:7c47bb4e3a24bcc07ca6e3",
+        "android_client_info": {
+          "package_name": "uz.nazirov.firebase_core_ogabekdev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799944217562-bh8nqqg7mi9ttusm09eh1lius9e589sv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKVFIdhupIAGyyGku_NvgwjvlsyfOM0w4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799944217562-bh8nqqg7mi9ttusm09eh1lius9e589sv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
