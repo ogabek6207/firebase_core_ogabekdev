@@ -2,7 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core_ogabekdev/service/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'src/ui/home_screen.dart';
+import 'src/ui/src/ui/all_user_screen.dart';
+import 'src/ui/src/ui/home_screen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const AllUserScreen(),
     );
   }
 }

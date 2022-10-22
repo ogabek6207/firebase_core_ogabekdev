@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core_ogabekdev/service/notification_service.dart';
@@ -5,6 +7,7 @@ import 'package:firebase_core_ogabekdev/service/storage_service.dart';
 import 'package:firebase_core_ogabekdev/src/ui/model/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -38,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               onPressed: () {
                 final name = _controller.text;
-                createUser(name: name);
+                // createUser(user);
               },
               icon: Icon(Icons.add)),
         ],
@@ -101,6 +104,25 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: _controllerBirthdate,
             ),
           ),
+          SizedBox(
+            height: 16,
+          ),
+          GestureDetector(
+            onTap: () {
+              final user = User(
+                name: _controllerName.text,
+                age: int.parse(_controllerAge.text),
+                birthday: DateTime.parse(_controllerBirthdate.text),
+              );
+              createUser(user);
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 16, right: 16),
+              width: MediaQuery.of(context).size.width,
+              color: Colors.red,
+              height: 48,
+            ),
+          ),
         ],
       ),
     );
@@ -150,18 +172,19 @@ class _HomeScreenState extends State<HomeScreen> {
     // );
   }
 
-  Future<void> createUser({required String name}) async {
-    final docUser = FirebaseFirestore.instance.collection('users').doc('1');
+  // Future<void> createUser({required User user}) async {
+  //   final docUser = FirebaseFirestore.instance.collection('users').doc('1');
+  //
+  //
+  //
+  //   final json = user.toJson();
+  //
+  //   await docUser.set(json);
+  // }
 
-    final user = User(
-      id: docUser.id,
-      name: name,
-      age: 21,
-      birthday: DateTime(2001, 7, 28),
-    );
-
-    final json = user.toJson();
-
-    await docUser.set(json);
+  Future createUser(User user) async {
+    final docUser = FirebaseFirestore.instance.collection('users').doc(user.name);
+    user.id = docUser.id;
+    await docUser.set(user.toJson());
   }
 }
