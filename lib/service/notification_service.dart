@@ -98,16 +98,18 @@ class NotificationService {
       body,
       tz.TZDateTime.now(tz.local).add(Duration(seconds: seconds)),
       const NotificationDetails(
-          android: AndroidNotificationDetails(
-        'main_channel',
-        'Main Channel',
-        sound: RawResourceAndroidNotificationSound('lawgo_sound_notification'),
-        playSound: true,
-        importance: Importance.max,
-        priority: Priority.max,
-        colorized: true,
-        icon: '@drawable/ic_flutternotification',
-      )),
+        android: AndroidNotificationDetails(
+          'main_channel',
+          'Main Channel',
+          sound:
+              RawResourceAndroidNotificationSound('lawgo_sound_notification'),
+          playSound: true,
+          importance: Importance.max,
+          priority: Priority.max,
+          colorized: true,
+          icon: '@drawable/ic_flutternotification',
+        ),
+      ),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true,

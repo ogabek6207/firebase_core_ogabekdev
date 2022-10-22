@@ -16,13 +16,4 @@ class Storage {
     }
   }
 
-  Future<ListResult> listFiles() async {
-    ListResult result = await storage.ref('test').listAll();
-    for (var ref in result.items) {
-      if (kDebugMode) {
-        print('Found file: $ref');
-      }
-    }
-    return result;
-  }
 }

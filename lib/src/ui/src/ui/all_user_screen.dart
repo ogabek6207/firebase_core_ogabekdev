@@ -17,12 +17,12 @@ class _AllUserScreenState extends State<AllUserScreen> {
   }
 
   Widget buildUser(User user) => ListTile(
-        leading: CircleAvatar(
-          child: Text('${user.age}'),
-        ),
-        title: Text(user.name),
-        subtitle: Text(user.birthday.toIso8601String()),
-      );
+    leading: CircleAvatar(
+      child: Text('${user.age}'),
+    ),
+    title: Text(user.name),
+    subtitle: Text(user.birthday.toIso8601String()),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +38,8 @@ class _AllUserScreenState extends State<AllUserScreen> {
             // ignore: unnecessary_null_comparison
             if (users == null) {
               return const Center(
-                    child: Text("No user"),
-                  );
+                child: Text("No user"),
+              );
             } else {
               return buildUser(users);
             }
@@ -53,11 +53,7 @@ class _AllUserScreenState extends State<AllUserScreen> {
     );
   }
 
-  // Stream<List<User>> readUsers() => FirebaseFirestore.instance
-  //     .collection('users')
-  //     .snapshots()
-  //     .map((snapshot) =>
-  //         snapshot.docs.map((doc) => User.fromJson(doc.data())).toList());
+
 
   Future<User?> readUser() async {
     final docUser = FirebaseFirestore.instance.collection('users').doc('1');
