@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:timezone/timezone.dart' as tz;
 
@@ -19,19 +20,19 @@ class NotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // final IOSInitializationSettings initializationSettingsIos =
-    //     IOSInitializationSettings(
-    //   requestAlertPermission: true,
-    //   requestBadgePermission: true,
-    //   requestSoundPermission: true,
-    //   onDidReceiveLocalNotification:
-    //       (int id, String? title, String? body, String? payload) async {},
-    // );
+    final DarwinInitializationSettings initializationSettingsIos =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {},
+    );
 
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
-      // iOS: initializationSettingsIos,
+      iOS: initializationSettingsIos,
     );
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
