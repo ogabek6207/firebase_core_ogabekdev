@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core_ogabekdev/service/notification_service.dart';
 import 'package:firebase_core_ogabekdev/service/storage_service.dart';
+import 'package:firebase_core_ogabekdev/src/ui/model/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controllerName = TextEditingController();
+  final TextEditingController _controllerAge = TextEditingController();
+  final TextEditingController _controllerBirthdate = TextEditingController();
+
   @override
   void initState() {
     _initFirebase();
@@ -24,12 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: FloatingActionButton(
-          onPressed: () {
-            notificationService.showNotification(
-                13232332, "sdscsf", "sfv sf vfsv");
-          },
+        leading: TextField(
+          controller: _controller,
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                final name = _controller.text;
+                createUser(name: name);
+              },
+              icon: Icon(Icons.add)),
+        ],
       ),
       body: Column(
         children: [
@@ -56,9 +68,39 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text("Upload file"),
             ),
           ),
-          // FutureBuilder(future: storage.listFiles(),
-          //   builder: (BuildContext context, AsyncSnapshot<>),
-          // ),
+          SizedBox(
+            height: 16,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16),
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey,
+            child: TextField(
+              controller: _controllerName,
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16),
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey,
+            child: TextField(
+              controller: _controllerAge,
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16),
+            width: MediaQuery.of(context).size.width,
+            color: Colors.grey,
+            child: TextField(
+              controller: _controllerBirthdate,
+            ),
+          ),
         ],
       ),
     );
@@ -106,5 +148,20 @@ class _HomeScreenState extends State<HomeScreen> {
     //     }
     //   },
     // );
+  }
+
+  Future<void> createUser({required String name}) async {
+    final docUser = FirebaseFirestore.instance.collection('users').doc('1');
+
+    final user = User(
+      id: docUser.id,
+      name: name,
+      age: 21,
+      birthday: DateTime(2001, 7, 28),
+    );
+
+    final json = user.toJson();
+
+    await docUser.set(json);
   }
 }
