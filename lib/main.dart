@@ -3,7 +3,6 @@ import 'package:firebase_core_ogabekdev/service/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'src/ui/src/ui/all_user_screen.dart';
-import 'src/ui/src/ui/home_screen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();

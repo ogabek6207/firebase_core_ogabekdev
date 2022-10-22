@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core_ogabekdev/service/notification_service.dart';
 import 'package:firebase_core_ogabekdev/service/storage_service.dart';
 import 'package:firebase_core_ogabekdev/src/ui/model/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -38,12 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: _controller,
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                final name = _controller.text;
-                // createUser(user);
-              },
-              icon: Icon(Icons.add)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
         ],
       ),
       body: Column(
@@ -71,40 +64,40 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text("Upload file"),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
+            margin: const EdgeInsets.only(left: 16, right: 16),
             width: MediaQuery.of(context).size.width,
             color: Colors.grey,
             child: TextField(
               controller: _controllerName,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
+            margin: const EdgeInsets.only(left: 16, right: 16),
             width: MediaQuery.of(context).size.width,
             color: Colors.grey,
             child: TextField(
               controller: _controllerAge,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
+            margin: const EdgeInsets.only(left: 16, right: 16),
             width: MediaQuery.of(context).size.width,
             color: Colors.grey,
             child: TextField(
               controller: _controllerBirthdate,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           GestureDetector(
@@ -117,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
               createUser(user);
             },
             child: Container(
-              margin: EdgeInsets.only(left: 16, right: 16),
+              margin: const EdgeInsets.only(left: 16, right: 16),
               width: MediaQuery.of(context).size.width,
               color: Colors.red,
               height: 48,
@@ -130,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initFirebase() async {
     String? token = await FirebaseMessaging.instance.getToken();
-    print(token);
+    if (kDebugMode) {
+      print(token);
+    }
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
@@ -143,47 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     });
-
-    // FirebaseMessaging.onMessageOpenedApp.listen(
-    //   (RemoteMessage message) {
-    //     print("A new OnMessageOpenedApp event was published! ");
-    //
-    //     RemoteNotification? notification = message.notification;
-    //     AndroidNotification? android = message.notification?.android;
-    //     if (notification != null && android != null) {
-    //       showDialog(
-    //         context: context,
-    //         builder: (_) {
-    //           return AlertDialog(
-    //             title: Text(notification.title!),
-    //             content: SingleChildScrollView(
-    //               child: Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   Text(notification.body!),
-    //                 ],
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       );
-    //     }
-    //   },
-    // );
   }
 
-  // Future<void> createUser({required User user}) async {
-  //   final docUser = FirebaseFirestore.instance.collection('users').doc('1');
-  //
-  //
-  //
-  //   final json = user.toJson();
-  //
-  //   await docUser.set(json);
-  // }
-
   Future createUser(User user) async {
-    final docUser = FirebaseFirestore.instance.collection('users').doc(user.name);
+    final docUser =
+        FirebaseFirestore.instance.collection('users').doc(user.name);
     user.id = docUser.id;
     await docUser.set(user.toJson());
   }

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
@@ -19,9 +18,11 @@ class Storage {
 
   Future<ListResult> listFiles() async {
     ListResult result = await storage.ref('test').listAll();
-    result.items.forEach((Reference ref) {
-      print('Found file: $ref');
-    });
+    for (var ref in result.items) {
+      if (kDebugMode) {
+        print('Found file: $ref');
+      }
+    }
     return result;
   }
 }
