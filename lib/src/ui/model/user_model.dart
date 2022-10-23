@@ -14,10 +14,10 @@ class User {
   });
 
   static User fromJson(Map<String, dynamic> json) => User(
-    id: json['id'],
-        name: json['name'],
-        age: json['age'],
-        birthday: (json['birthday'] as Timestamp).toDate(),
+    id: json['id'] ?? "",
+        name: json['name'] ?? "",
+        age: json['age'] ?? 0,
+        birthday: json['birthday'] != null ? (json['birthday'] as Timestamp).toDate() : DateTime.now(),
       );
 
   Map<String, dynamic> toJson() => {

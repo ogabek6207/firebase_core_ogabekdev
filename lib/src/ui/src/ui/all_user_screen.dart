@@ -11,56 +11,48 @@ class AllUserScreen extends StatefulWidget {
 
 class _AllUserScreenState extends State<AllUserScreen> {
   @override
-  void initState() {
-    // readUsers();
-    super.initState();
-  }
-
-  Widget buildUser(User user) => ListTile(
-    leading: CircleAvatar(
-      child: Text('${user.age}'),
-    ),
-    title: Text(user.name),
-    subtitle: Text(user.birthday.toIso8601String()),
-  );
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("All User"),
       ),
-      body: FutureBuilder<User?>(
-        future: readUser(),
+      body: StreamBuilder<QuerySnapshot<User>>(
+        stream: getUsers.snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final users = snapshot.data!;
-            // ignore: unnecessary_null_comparison
-            if (users == null) {
-              return const Center(
-                child: Text("No user"),
-              );
-            } else {
-              return buildUser(users);
-            }
-          } else if (snapshot.hasError) {
-            return const Center(child: Text("SomeThing Error"));
-          } else {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
+
+          final data = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: data.docs.length,
+            itemBuilder: (context, index) {
+              return buildUser(data.docs[index].data());
+            },
+          );
         },
       ),
     );
   }
 
+  Widget buildUser(User user) => ListTile(
+        leading: CircleAvatar(
+          child: Text('${user.age}'),
+        ),
+        title: Text(user.name),
+        subtitle: Text(user.birthday.toIso8601String()),
+      );
 
-
-  Future<User?> readUser() async {
-    final docUser = FirebaseFirestore.instance.collection('users').doc('1');
-    final snapshot = await docUser.get();
-    if (snapshot.exists) {
-      return User.fromJson(snapshot.data()!);
-    }
-    return null;
-  }
+  final getUsers =
+      FirebaseFirestore.instance.collection('users').withConverter<User>(
+            fromFirestore: (snapshots, _) => User.fromJson(snapshots.data()!),
+            toFirestore: (movie, _) => movie.toJson(),
+          );
 }
